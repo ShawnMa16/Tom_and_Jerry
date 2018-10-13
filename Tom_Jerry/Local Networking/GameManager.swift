@@ -64,21 +64,21 @@ class GameManager: NSObject {
         gameCommands.append(GameCommand(player: currentPlayer, action: .gameAction(gameAction)))
     }
     
-    private func syncMovement() {
-        os_signpost(.begin, log: .render_loop, name: .physics_sync, signpostID: .render_loop,
-                    "Movement sync started")
-        defer { os_signpost(.end, log: .render_loop, name: .physics_sync, signpostID: .render_loop,
-                            "Movement sync finished") }
-        
-        if isNetworked && movementSyncData.isInitialized {
-            if isServer {
-                let movementData = movementSyncData.generateData()
-                session?.send(action: .gameAction(.movement(movementData)))
-            } else {
-                movementSyncData.updateFromReceivedData()
-            }
-        }
-    }
+//    private func syncMovement() {
+//        os_signpost(.begin, log: .render_loop, name: .physics_sync, signpostID: .render_loop,
+//                    "Movement sync started")
+//        defer { os_signpost(.end, log: .render_loop, name: .physics_sync, signpostID: .render_loop,
+//                            "Movement sync finished") }
+//        
+//        if isNetworked && movementSyncData.isInitialized {
+//            if isServer {
+//                let movementData = movementSyncData.generateData()
+//                session?.send(action: .gameAction(.movement(movementData)))
+//            } else {
+//                movementSyncData.updateFromReceivedData()
+//            }
+//        }
+//    }
     
     
     func resetWorld(sceneView: SCNView) {
@@ -170,6 +170,7 @@ class GameManager: NSObject {
         isInitialized = true
     }
     
+    // game object managing
     func createTank(tankNode: SCNNode, owner: Player?) {
         let tank = GameObject(node: tankNode, index: 0, alive: true, owner: owner, isHost: currentPlayer == session?.host)
         // insert new Tank() to game scene

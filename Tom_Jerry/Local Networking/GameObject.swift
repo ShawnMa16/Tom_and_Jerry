@@ -57,6 +57,8 @@ class GameObject: NSObject {
     var objectRootNode: SCNNode!
     var physicsNode: SCNNode?
     var geometryNode: SCNNode?
+//    var shadowPlanNode: SCNNode?
+    
     var owner: Player?
     
     var animations: ObjectAnimations
@@ -83,6 +85,8 @@ class GameObject: NSObject {
         super.init()
         
         attachGeometry(isHost: isHost)
+        
+//        self.objectRootNode.castsShadow = true
         
     }
     
@@ -119,6 +123,11 @@ class GameObject: NSObject {
 //        self.geometryNode = loadTank()
         self.objectRootNode.addChildNode(self.geometryNode!)
     }
+    
+//    private func castShadow() {
+//        let shadowPlane = SCNPlane(width: 2.0, height: 2.0)
+//        
+//    }
     
     func swichAnimation(isIdle: Bool) {
         let beginKey = isIdle ? "running" : "idle"
