@@ -1,6 +1,0 @@
-framework module Pods_Tom_Jerry {
-  umbrella header "Pods-Tom_Jerry-umbrella.h"
-
-  export *
-  module * { export * }
-}
