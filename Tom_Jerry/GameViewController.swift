@@ -258,7 +258,8 @@ class GameViewController: UIViewController {
     
     func initARScene() {
         arscnView.delegate = self
-        arscnView.autoenablesDefaultLighting = true
+        arscnView.autoenablesDefaultLighting = false
+        arscnView.automaticallyUpdatesLighting = false
     }
     
     func initARSession() {
@@ -522,7 +523,7 @@ extension GameViewController: GameStartViewControllerDelegate {
     private func createGameManager(for session: NetworkSession?) {
         gameManager = GameManager(sceneView: arscnView,
                                   session: session)
-        gameManager?.start()
+        gameManager?.startGame()
         startARSession()
     }
     

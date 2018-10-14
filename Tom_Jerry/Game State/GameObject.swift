@@ -57,7 +57,7 @@ class GameObject: NSObject {
     var objectRootNode: SCNNode!
     var physicsNode: SCNNode?
     var geometryNode: SCNNode!
-    //    var shadowPlanNode: SCNNode?
+    var shadowPlanNode: SCNNode?
     
     var owner: Player?
     
@@ -87,7 +87,9 @@ class GameObject: NSObject {
         attachGeometry(isHost: isHost)
         
         self.objectRootNode.castsShadow = true
-        self.geometryNode.castsShadow = true
+//        self.geometryNode.castsShadow = true
+        
+        castShadow()
         
     }
     
@@ -119,10 +121,13 @@ class GameObject: NSObject {
         self.objectRootNode.addChildNode(self.geometryNode)
     }
     
-    //    private func castShadow() {
-    //        let shadowPlane = SCNPlane(width: 2.0, height: 2.0)
-    //
-    //    }
+    private func castShadow() {
+        let shadowPlane = SCNPlane(width: 20.0, height: 20.0)
+        shadowPlane.materials.first?.colorBufferWriteMask = SCNColorMask(rawValue:0)
+        self.shadowPlanNode = SCNNode(geometry: shadowPlane)
+        self.shadowPlanNode!.transform = SCNMatrix4MakeRotation(-Float.pi/2, 1, 0, 0)
+        self.objectRootNode.addChildNode(self.shadowPlanNode!)
+    }
     
     func swichAnimation(isMoving: Bool) {
         let beginKey = isMoving ? "running" : "idle"

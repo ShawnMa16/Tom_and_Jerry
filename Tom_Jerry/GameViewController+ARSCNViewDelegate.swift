@@ -86,6 +86,11 @@ extension GameViewController: ARSCNViewDelegate, ARSessionDelegate {
         if let gameManager = self.gameManager, gameManager.isInitialized {
             GameTime.updateAtTime(time: time)
             gameManager.update(timeDelta: GameTime.deltaTime)
+            
+            // rending real-time lighting
+            if let estimate = self.arscnView.session.currentFrame?.lightEstimate {
+                gameManager.updateLighting(lightEstimate: estimate)
+            }
         }
         
         os_signpost(.end, log: .render_loop, name: .logic_update, signpostID: .render_loop,

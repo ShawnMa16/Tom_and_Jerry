@@ -34,12 +34,16 @@ class GameManager: NSObject {
     private let session: NetworkSession?
     private var scene: SCNScene
     
+    private var secondaryLightNode: SCNNode?
+    private var mainLightNode: SCNNode?
+    private var ambientLightNode: SCNNode?
+    
     var gameObjects = Set<GameObject>()
     
     private let catapultsLock = NSLock()
     private var gameCommands = [GameCommand]()
     private let commandsLock = NSLock()
-        
+    
     let currentPlayer = UserDefaults.standard.myself
     
     let isNetworked: Bool
@@ -57,26 +61,60 @@ class GameManager: NSObject {
         self.session?.delegate = self
     }
     
+    private func setupLight() {
+        
+        // create secondary light
+        secondaryLightNode = SCNNode()
+        secondaryLightNode!.light = SCNLight()
+        secondaryLightNode!.light!.type = .omni
+        secondaryLightNode!.position = SCNVector3(x: 0, y: 1, z: 1)
+        self.scene.rootNode.addChildNode(secondaryLightNode!)
+        
+        mainLightNode = SCNNode()
+        mainLightNode!.light = SCNLight()
+        mainLightNode!.light!.type = .spot
+        mainLightNode!.light!.castsShadow = true
+        mainLightNode!.light!.shadowMode = .deferred
+        mainLightNode!.position = SCNVector3(x: -1, y: 10, z: 1)
+        mainLightNode!.eulerAngles = SCNVector3(-Float.pi/2, 0, 0)
+        mainLightNode!.light!.shadowSampleCount = 64 //remove flickering of shadow and soften shadow
+        mainLightNode!.light!.shadowMapSize = CGSize(width: 3072, height: 3072)
+        self.scene.rootNode.addChildNode(mainLightNode!)
+        
+        ambientLightNode = SCNNode()
+        ambientLightNode!.light = SCNLight()
+        ambientLightNode!.light!.type = .ambient
+        ambientLightNode!.light!.color = UIColor.darkGray
+        self.scene.rootNode.addChildNode(ambientLightNode!)
+    }
+    
+    func updateLighting(lightEstimate: ARLightEstimate) {
+        self.ambientLightNode!.light!.intensity = lightEstimate.ambientIntensity
+        self.ambientLightNode!.light!.temperature = lightEstimate.ambientColorTemperature
+        self.secondaryLightNode!.light!.intensity = lightEstimate.ambientIntensity/3
+        self.secondaryLightNode!.light!.temperature = lightEstimate.ambientColorTemperature
+    }
+    
     func queueAction(gameAction: GameAction) {
         commandsLock.lock(); defer { commandsLock.unlock() }
         gameCommands.append(GameCommand(player: currentPlayer, action: .gameAction(gameAction)))
     }
     
-//    private func syncMovement() {
-//        os_signpost(.begin, log: .render_loop, name: .physics_sync, signpostID: .render_loop,
-//                    "Movement sync started")
-//        defer { os_signpost(.end, log: .render_loop, name: .physics_sync, signpostID: .render_loop,
-//                            "Movement sync finished") }
-//        
-//        if isNetworked && movementSyncData.isInitialized {
-//            if isServer {
-//                let movementData = movementSyncData.generateData()
-//                session?.send(action: .gameAction(.movement(movementData)))
-//            } else {
-//                movementSyncData.updateFromReceivedData()
-//            }
-//        }
-//    }
+    //    private func syncMovement() {
+    //        os_signpost(.begin, log: .render_loop, name: .physics_sync, signpostID: .render_loop,
+    //                    "Movement sync started")
+    //        defer { os_signpost(.end, log: .render_loop, name: .physics_sync, signpostID: .render_loop,
+    //                            "Movement sync finished") }
+    //
+    //        if isNetworked && movementSyncData.isInitialized {
+    //            if isServer {
+    //                let movementData = movementSyncData.generateData()
+    //                session?.send(action: .gameAction(.movement(movementData)))
+    //            } else {
+    //                movementSyncData.updateFromReceivedData()
+    //            }
+    //        }
+    //    }
     
     
     func resetWorld(sceneView: SCNView) {
@@ -162,7 +200,7 @@ class GameManager: NSObject {
         }
     }
     
-    func start() {
+    func startGame() {
         // Start advertising game
         if let session = session, session.isServer {
             session.startAdvertising()
@@ -170,6 +208,7 @@ class GameManager: NSObject {
         
         delegate?.managerDidStartGame(self)
         isInitialized = true
+        setupLight()
     }
     
     // game object managing
