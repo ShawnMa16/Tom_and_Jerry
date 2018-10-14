@@ -10,8 +10,8 @@ import MultipeerConnectivity
 import os.log
 
 struct MultiuserService {
-    static let playerService = "multiuser-p"
-    static let spectatorService = "multiuser-s"
+    static let playerService = "Tom-and-Jerry-p"
+    static let spectatorService = "Tom-and-Jerry-s"
 }
 
 struct MultiuserAttribute {

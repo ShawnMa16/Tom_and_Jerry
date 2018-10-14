@@ -21,7 +21,7 @@ struct ObjectAnimations {
         let idleSceneName = isHost ? "art.scnassets/Jerry-Idle" : "art.scnassets/Tom-Idle"
         let runningSceneName = isHost ? "art.scnassets/Jerry-Running" : "art.scnassets/Tom-Running"
         let idleIdentifier = isHost ? "Jerry-Idle-1" : "Tom-Idle-1"
-        let runningIdentifier = isHost ? "Jerry-Running-1" : "Tom-Runnning-1"
+        let runningIdentifier = isHost ? "Jerry-Running-1" : "Tom-Running-1"
         
         let idleURL = Bundle.main.url(forResource: idleSceneName, withExtension: "dae")!
         let runningURL = Bundle.main.url(forResource: runningSceneName, withExtension: "dae")!
@@ -41,7 +41,7 @@ struct ObjectAnimations {
         if let animationObject = sceneSource?.entryWithIdentifier(animationIdentifier, withClass: CAAnimation.self) {
             // loop the animation
             animationObject.repeatCount = Float.greatestFiniteMagnitude
-
+            
             // To create smooth transitions between animations
             animationObject.fadeInDuration = CGFloat(1)
             animationObject.fadeOutDuration = CGFloat(0.5)
@@ -56,8 +56,8 @@ class GameObject: NSObject {
     
     var objectRootNode: SCNNode!
     var physicsNode: SCNNode?
-    var geometryNode: SCNNode?
-//    var shadowPlanNode: SCNNode?
+    var geometryNode: SCNNode!
+    //    var shadowPlanNode: SCNNode?
     
     var owner: Player?
     
@@ -86,22 +86,15 @@ class GameObject: NSObject {
         
         attachGeometry(isHost: isHost)
         
-//        self.objectRootNode.castsShadow = true
+        //        self.objectRootNode.castsShadow = true
         
-    }
-    
-    private func loadTank() -> SCNNode {
-        let sceneURL = Bundle.main.url(forResource: "Tank", withExtension: "scn", subdirectory: "Assets.scnassets/Models")!
-        let referenceNode = SCNReferenceNode(url: sceneURL)!
-        referenceNode.load()
-        
-        return referenceNode
     }
     
     private func loadTom() -> SCNNode {
-        let idleScene = SCNScene(named: "art.scnassets/running.dae")!
-        let rootNode = SCNNode()
         
+        let idleScene = SCNScene(named: "art.scnassets/Tom-Idle.dae")!
+        let rootNode = SCNNode()
+
         for childNode in idleScene.rootNode.childNodes {
             rootNode.addChildNode(childNode)
         }
@@ -109,9 +102,10 @@ class GameObject: NSObject {
     }
     
     private func loadJerry() -> SCNNode {
+        
         let idleScene = SCNScene(named: "art.scnassets/Jerry-Idle.dae")!
         let rootNode = SCNNode()
-        
+
         for childNode in idleScene.rootNode.childNodes {
             rootNode.addChildNode(childNode)
         }
@@ -119,40 +113,21 @@ class GameObject: NSObject {
     }
     
     private func attachGeometry(isHost: Bool) {
-        self.geometryNode = isHost ? loadJerry() : loadTom()
-//        self.geometryNode = loadTank()
-        self.objectRootNode.addChildNode(self.geometryNode!)
+        // clone the object node to geometry node
+        self.geometryNode = isHost ? loadJerry().clone() : loadTom().clone()
+        self.objectRootNode.addChildNode(self.geometryNode)
     }
     
-//    private func castShadow() {
-//        let shadowPlane = SCNPlane(width: 2.0, height: 2.0)
-//        
-//    }
+    //    private func castShadow() {
+    //        let shadowPlane = SCNPlane(width: 2.0, height: 2.0)
+    //
+    //    }
     
-    func swichAnimation(isIdle: Bool) {
-        let beginKey = isIdle ? "running" : "idle"
-        let stopKey = isIdle ? "idle" : "running"
-        self.objectRootNode.removeAnimation(forKey: stopKey, blendOutDuration: CGFloat(0.5))
-        self.objectRootNode.addAnimation(self.animations.animations[beginKey]!, forKey: beginKey)
-        
-//        self.objectRootNode.runAction(<#T##action: SCNAction##SCNAction#>)
+    func swichAnimation(isMoving: Bool) {
+        let beginKey = isMoving ? "running" : "idle"
+        let stopKey = isMoving ? "idle" : "running"
+        self.geometryNode.addAnimation(self.animations.animations[beginKey]!, forKey: beginKey)
+        self.geometryNode.removeAnimation(forKey: stopKey, blendOutDuration: CGFloat(0.5))
     }
     
-    func apply(movementData nodeData: MovementData, isHalfway: Bool) {
-        // if we're not alive, avoid applying physics updates.
-        // this will allow objects on clients to get culled properly
-        guard isAlive else { return }
-        
-        if isHalfway {
-            objectRootNode.simdWorldPosition = (nodeData.position + objectRootNode.simdWorldPosition) * 0.5
-            objectRootNode.simdEulerAngles = (nodeData.eulerAngles + objectRootNode.simdEulerAngles) * 0.5
-        } else {
-            objectRootNode.simdWorldPosition = nodeData.position
-            objectRootNode.simdEulerAngles = nodeData.eulerAngles
-        }
-    }
-    
-    func generateMovementData() -> MovementData? {
-        return objectRootNode.map { MovementData(node: $0, alive: isAlive) }
-    }
 }

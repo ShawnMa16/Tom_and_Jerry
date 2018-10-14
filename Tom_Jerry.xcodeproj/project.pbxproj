@@ -26,9 +26,6 @@
 		2907863C216FA1FE00DD6E76 /* GameCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29078617216FA1FD00DD6E76 /* GameCommand.swift */; };
 		2907863D216FA1FE00DD6E76 /* Player.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29078618216FA1FD00DD6E76 /* Player.swift */; };
 		2907863E216FA1FE00DD6E76 /* GameManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29078619216FA1FD00DD6E76 /* GameManager.swift */; };
-		2907863F216FA1FE00DD6E76 /* MovementData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2907861B216FA1FE00DD6E76 /* MovementData.swift */; };
-		29078640216FA1FE00DD6E76 /* MovementSyncData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2907861C216FA1FE00DD6E76 /* MovementSyncData.swift */; };
-		29078641216FA1FE00DD6E76 /* MovementSyncSceneData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2907861D216FA1FE00DD6E76 /* MovementSyncSceneData.swift */; };
 		29078642216FA1FE00DD6E76 /* GameStartViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2907861F216FA1FE00DD6E76 /* GameStartViewController.swift */; };
 		29078643216FA1FE00DD6E76 /* NetworkGameBrowserViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29078620216FA1FE00DD6E76 /* NetworkGameBrowserViewController.swift */; };
 		29078644216FA1FE00DD6E76 /* BitStreamCodable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29078622216FA1FE00DD6E76 /* BitStreamCodable.swift */; };
@@ -67,9 +64,6 @@
 		29078617216FA1FD00DD6E76 /* GameCommand.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GameCommand.swift; sourceTree = "<group>"; };
 		29078618216FA1FD00DD6E76 /* Player.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Player.swift; sourceTree = "<group>"; };
 		29078619216FA1FD00DD6E76 /* GameManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GameManager.swift; sourceTree = "<group>"; };
-		2907861B216FA1FE00DD6E76 /* MovementData.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MovementData.swift; sourceTree = "<group>"; };
-		2907861C216FA1FE00DD6E76 /* MovementSyncData.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MovementSyncData.swift; sourceTree = "<group>"; };
-		2907861D216FA1FE00DD6E76 /* MovementSyncSceneData.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MovementSyncSceneData.swift; sourceTree = "<group>"; };
 		2907861F216FA1FE00DD6E76 /* GameStartViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GameStartViewController.swift; sourceTree = "<group>"; };
 		29078620216FA1FE00DD6E76 /* NetworkGameBrowserViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NetworkGameBrowserViewController.swift; sourceTree = "<group>"; };
 		29078622216FA1FE00DD6E76 /* BitStreamCodable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BitStreamCodable.swift; sourceTree = "<group>"; };
@@ -130,17 +124,17 @@
 		290785F3216FA14200DD6E76 /* Tom_Jerry */ = {
 			isa = PBXGroup;
 			children = (
+				290785F4216FA14200DD6E76 /* AppDelegate.swift */,
 				2907860A216FA1FD00DD6E76 /* GameViewController.swift */,
 				2907860E216FA1FD00DD6E76 /* GameViewController+ARSCNViewDelegate.swift */,
-				29078621216FA1FE00DD6E76 /* Bit Stream */,
-				2907860B216FA1FD00DD6E76 /* Four Square */,
-				29078606216FA1FD00DD6E76 /* Joystick */,
-				2907860F216FA1FD00DD6E76 /* Local Networking */,
-				2907861A216FA1FE00DD6E76 /* Movement Synchronization - not being used */,
-				29078624216FA1FE00DD6E76 /* Signpost */,
 				2907861E216FA1FE00DD6E76 /* Supporting ViewController */,
+				29AB98132173CC3500141589 /* Game State */,
+				2907860F216FA1FD00DD6E76 /* Local Networking */,
+				29078621216FA1FE00DD6E76 /* Bit Stream */,
+				29078606216FA1FD00DD6E76 /* Joystick */,
 				29078627216FA1FE00DD6E76 /* Utilities */,
-				290785F4216FA14200DD6E76 /* AppDelegate.swift */,
+				2907860B216FA1FD00DD6E76 /* Four Square */,
+				29078624216FA1FE00DD6E76 /* Signpost */,
 				290785FB216FA14400DD6E76 /* Assets.xcassets */,
 				290785FD216FA14400DD6E76 /* LaunchScreen.storyboard */,
 				29078650216FA4E300DD6E76 /* art.scnassets */,
@@ -171,27 +165,13 @@
 		2907860F216FA1FD00DD6E76 /* Local Networking */ = {
 			isa = PBXGroup;
 			children = (
-				29078611216FA1FD00DD6E76 /* GameCell.swift */,
-				29078612216FA1FD00DD6E76 /* GameTime.swift */,
 				29078613216FA1FD00DD6E76 /* NetworkSession.swift */,
 				29078614216FA1FD00DD6E76 /* GameBrowser.swift */,
-				29078615216FA1FD00DD6E76 /* NetworkGame.swift */,
-				29078616216FA1FD00DD6E76 /* GameObject.swift */,
 				29078617216FA1FD00DD6E76 /* GameCommand.swift */,
+				29078615216FA1FD00DD6E76 /* NetworkGame.swift */,
 				29078618216FA1FD00DD6E76 /* Player.swift */,
-				29078619216FA1FD00DD6E76 /* GameManager.swift */,
 			);
 			path = "Local Networking";
-			sourceTree = "<group>";
-		};
-		2907861A216FA1FE00DD6E76 /* Movement Synchronization - not being used */ = {
-			isa = PBXGroup;
-			children = (
-				2907861B216FA1FE00DD6E76 /* MovementData.swift */,
-				2907861C216FA1FE00DD6E76 /* MovementSyncData.swift */,
-				2907861D216FA1FE00DD6E76 /* MovementSyncSceneData.swift */,
-			);
-			path = "Movement Synchronization - not being used";
 			sourceTree = "<group>";
 		};
 		2907861E216FA1FE00DD6E76 /* Supporting ViewController */ = {
@@ -232,6 +212,17 @@
 				2907862D216FA1FE00DD6E76 /* UserDefaults+Helpers.swift */,
 			);
 			path = Utilities;
+			sourceTree = "<group>";
+		};
+		29AB98132173CC3500141589 /* Game State */ = {
+			isa = PBXGroup;
+			children = (
+				29078611216FA1FD00DD6E76 /* GameCell.swift */,
+				29078612216FA1FD00DD6E76 /* GameTime.swift */,
+				29078616216FA1FD00DD6E76 /* GameObject.swift */,
+				29078619216FA1FD00DD6E76 /* GameManager.swift */,
+			);
+			path = "Game State";
 			sourceTree = "<group>";
 		};
 		B0D95A5BF0454604BAE4C027 /* Frameworks */ = {
@@ -370,12 +361,10 @@
 				29078637216FA1FE00DD6E76 /* GameTime.swift in Sources */,
 				29078638216FA1FE00DD6E76 /* NetworkSession.swift in Sources */,
 				2907862F216FA1FE00DD6E76 /* AnalogJoystick.swift in Sources */,
-				29078641216FA1FE00DD6E76 /* MovementSyncSceneData.swift in Sources */,
 				2907863C216FA1FE00DD6E76 /* GameCommand.swift in Sources */,
 				290785F5216FA14200DD6E76 /* AppDelegate.swift in Sources */,
 				29078649216FA1FE00DD6E76 /* Utilities.swift in Sources */,
 				29078648216FA1FE00DD6E76 /* Bundle+Helpers.swift in Sources */,
-				29078640216FA1FE00DD6E76 /* MovementSyncData.swift in Sources */,
 				2907864B216FA1FE00DD6E76 /* SCNPhysicsBody+Helper.swift in Sources */,
 				29078634216FA1FE00DD6E76 /* GameViewController+ARSCNViewDelegate.swift in Sources */,
 				2907863B216FA1FE00DD6E76 /* GameObject.swift in Sources */,
@@ -384,7 +373,6 @@
 				29078631216FA1FE00DD6E76 /* GameViewController.swift in Sources */,
 				29078646216FA1FE00DD6E76 /* SignpostData.swift in Sources */,
 				2907863D216FA1FE00DD6E76 /* Player.swift in Sources */,
-				2907863F216FA1FE00DD6E76 /* MovementData.swift in Sources */,
 				2907862E216FA1FE00DD6E76 /* Constants.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -527,6 +515,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 47XMMG9HCB;
 				INFOPLIST_FILE = Tom_Jerry/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -546,6 +535,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 47XMMG9HCB;
 				INFOPLIST_FILE = Tom_Jerry/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",

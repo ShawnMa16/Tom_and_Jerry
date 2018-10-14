@@ -145,10 +145,20 @@ class GameViewController: UIViewController {
             let data = userInfo["data"] as! AnalogJoystickData
             
             // format data for sending
+            
+            // object facing orientation
+            let cameraDirection = self.arscnView.session.currentFrame?.camera.eulerAngles.y
+            let angular = Float(data.angular) + cameraDirection!
+
+//            let oreitationY = self.focusSquare.orientation.w - (self.focusSquare.orientation.y)
+//            let oreitationX = self.focusSquare.orientation.w - abs(self.focusSquare.orientation.y)
+//            print(oreitation)
+//            print(self.arscnView.session.currentFrame?.camera.eulerAngles.y)
+            
             let velocity = float3(Float(data.velocity.x), Float(data.velocity.y), Float(0))
-            print(velocity)
+
             let v = GameVelocity(vector: velocity)
-            let angular = Float(data.angular)
+            
             let shouldBeSent = MoveData(velocity: v, angular: angular)
             
             // controll tank's movement
@@ -156,7 +166,7 @@ class GameViewController: UIViewController {
             
             // send movement data to all peer
             DispatchQueue.main.async {
-                self.gameManager?.send(gameAction: .joyStickMoved(shouldBeSent))
+                self.gameManager?.send(gameAction: .JoyStickInMoving(shouldBeSent))
             }
         }
         
@@ -168,7 +178,12 @@ class GameViewController: UIViewController {
             let isMoving = data["moving"] as! Bool
             print("========= begin moving ======== \(isMoving)")
             
-            self.gameManager?.swtchAnimation(player: self.myself, isMoving: isMoving)
+            
+            let shouldBeRunning = SwitchAnimation(isMoving: isMoving)
+            DispatchQueue.main.async {
+                self.gameManager?.switchAnimation(player: self.myself, isMoving: isMoving)
+                self.gameManager?.send(gameAction: .JoyStickWillorStopMoving(shouldBeRunning))
+            }
         }
         
         // end moving
@@ -179,7 +194,12 @@ class GameViewController: UIViewController {
             let isMoving = data["moving"] as! Bool
             print("========= end moving ========")
             
-            self.gameManager?.swtchAnimation(player: self.myself, isMoving: isMoving)
+            
+            let shouldBeRunning = SwitchAnimation(isMoving: isMoving)
+            DispatchQueue.main.async {
+                self.gameManager?.switchAnimation(player: self.myself, isMoving: isMoving)
+                self.gameManager?.send(gameAction: .JoyStickWillorStopMoving(shouldBeRunning))
+            }
         }
         
     }
@@ -198,7 +218,6 @@ class GameViewController: UIViewController {
         guard let camera = arscnView.pointOfView?.camera else {
             fatalError("Expected a valid `pointOfView` from the scene.")
         }
-        
         /*
          Enable HDR camera settings for the most realistic appearance
          with environmental lighting and physically based materials.
@@ -267,7 +286,7 @@ class GameViewController: UIViewController {
     
     func resetTracking() {
         let configuration = ARWorldTrackingConfiguration()
-        configuration.planeDetection = [.vertical, .horizontal]
+        configuration.planeDetection = [.horizontal]
         if #available(iOS 12.0, *) {
             configuration.environmentTexturing = .automatic
         }
@@ -297,28 +316,29 @@ class GameViewController: UIViewController {
             make.height.equalTo(44)
         }
         addButton.isHidden = false
-        addButton.addTarget(self, action: #selector(addTank), for: .touchUpInside)
+        addButton.addTarget(self, action: #selector(addObject), for: .touchUpInside)
         
     }
     
     
-    @objc func addTank() {
+    @objc func addObject() {
         addButton.isHidden = true
         padView.isHidden = false
         
-        let tankNode = SCNNode()
-        tankNode.simdWorldTransform = self.focusSquare.simdWorldTransform
-        print(self.focusSquare.simdWorldTransform)
+        let objectNode = SCNNode()
+        objectNode.simdWorldTransform = self.focusSquare.simdWorldTransform
         
-        tankNode.eulerAngles = SCNVector3(0, self.focusSquare.eulerAngles.y + 180.0 * .pi / 180, 0)
-        tankNode.scale = SCNVector3(0.01, 0.01, 0.01)
+        objectNode.eulerAngles = SCNVector3(0, self.focusSquare.eulerAngles.y + 180.0 * .pi / 180, 0)
+        objectNode.scale = SCNVector3(0.01, 0.01, 0.01)
         
-        let addTank = AddTankNodeAction(simdWorldTransform: self.focusSquare.simdWorldTransform, eulerAngles: float3(0, self.focusSquare.eulerAngles.y + 180.0 * .pi / 180, 0))
+        let addObject = AddObjectAction(simdWorldTransform: objectNode.simdWorldTransform, eulerAngles: float3(0, self.focusSquare.eulerAngles.y + 180.0 * .pi / 180, 0))
         
         // send add tank action to all peer
-        self.gameManager?.send(addTankAction: addTank)
+        self.gameManager?.send(addObjectAction: addObject)
         // add tank to scene
-        self.gameManager?.createTank(tankNode: tankNode, owner: myself)
+        DispatchQueue.main.async {
+            self.gameManager?.createObject(objectNode: objectNode, owner: self.myself)
+        }
     }
     
     
@@ -459,7 +479,7 @@ class GameViewController: UIViewController {
 }
 
 extension GameViewController: GameManagerDelegate {
-    func manager(_ manager: GameManager, addTank: AddTankNodeAction) {
+    func manager(_ manager: GameManager, addTank: AddObjectAction) {
         //
     }
     

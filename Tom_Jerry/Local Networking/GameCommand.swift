@@ -1,9 +1,9 @@
 /*
-See LICENSE folder for this sample’s licensing information.
-
-Abstract:
-Representations for game events, related data, and their encoding.
-*/
+ See LICENSE folder for this sample’s licensing information.
+ 
+ Abstract:
+ Representations for game events, related data, and their encoding.
+ */
 
 import Foundation
 import simd
@@ -164,28 +164,6 @@ extension GameVelocity: BitStreamCodable {
 private let velocityCompressor = FloatCompressor(minValue: -50.0, maxValue: 50.0, bits: 16)
 private let angularVelocityAxisCompressor = FloatCompressor(minValue: -1.0, maxValue: 1.0, bits: 12)
 
-//struct MoveData {
-//    var velocity: float3
-//    var angular: Float
-//
-//    init(velocity: float3, angular: Float) {
-//        self.velocity = velocity
-//        self.angular = angular
-//    }
-//}
-//
-//extension MoveData: BitStreamCodable {
-//    init(from bitStream: inout ReadableBitStream) throws {
-//        velocity = try velocityCompressor.readFloat3(from: &bitStream)
-//        angular = try angularVelocityAxisCompressor.read(from: &bitStream)
-//    }
-//
-//    func encode(to bitStream: inout WritableBitStream) throws {
-//        velocityCompressor.write(velocity, to: &bitStream)
-//        angularVelocityAxisCompressor.write(angular, to: &bitStream)
-//    }
-//}
-
 struct MoveData {
     var velocity: GameVelocity
     var angular: Float
@@ -196,19 +174,33 @@ extension MoveData: BitStreamCodable {
         velocity = try GameVelocity(from: &bitStream)
         angular = try bitStream.readFloat()
     }
-
+    
     func encode(to bitStream: inout WritableBitStream) throws {
         velocity.encode(to: &bitStream)
         bitStream.appendFloat(angular)
     }
 }
 
-struct AddTankNodeAction {
+struct AddObjectAction {
     var simdWorldTransform: float4x4
     var eulerAngles: float3
 }
 
-extension AddTankNodeAction: BitStreamCodable {
+struct SwitchAnimation {
+    var isMoving: Bool
+}
+
+extension SwitchAnimation: BitStreamCodable {
+    init(from bitStream: inout ReadableBitStream) throws {
+        isMoving = try bitStream.readBool()
+    }
+    
+    func encode(to bitStream: inout WritableBitStream) throws {
+        bitStream.appendBool(isMoving)
+    }
+}
+
+extension AddObjectAction: BitStreamCodable {
     init(from bitStream: inout ReadableBitStream) throws {
         simdWorldTransform = try float4x4(from: &bitStream)
         eulerAngles = try float3(from: &bitStream)
@@ -221,13 +213,12 @@ extension AddTankNodeAction: BitStreamCodable {
 }
 
 enum GameAction {
-    case joyStickMoved(MoveData)
-    
-    case movement(MovementSyncData)
+    case JoyStickInMoving(MoveData)
+    case JoyStickWillorStopMoving(SwitchAnimation)
     
     private enum CodingKey: UInt32, CaseIterable {
         case move
-//        case fire
+        case swichAnimation
     }
 }
 
@@ -236,12 +227,12 @@ extension GameAction: BitStreamCodable {
     func encode(to bitStream: inout WritableBitStream) throws {
         // switch game action
         switch self {
-        case .joyStickMoved(let data):
+        case .JoyStickInMoving(let data):
             bitStream.appendEnum(CodingKey.move)
             try data.encode(to: &bitStream)
             
-        case .movement(let data):
-            bitStream.appendEnum(CodingKey.move)
+        case .JoyStickWillorStopMoving(let data):
+            bitStream.appendEnum(CodingKey.swichAnimation)
             try data.encode(to: &bitStream)
         }
     }
@@ -251,22 +242,25 @@ extension GameAction: BitStreamCodable {
         switch key {
         case .move:
             let data = try MoveData(from: &bitStream)
-            self = .joyStickMoved(data)
+            self = .JoyStickInMoving(data)
+        case .swichAnimation:
+            let data = try SwitchAnimation(from: &bitStream)
+            self = .JoyStickWillorStopMoving(data)
         }
     }
-    
 }
+
 enum Action {
     case gameAction(GameAction)
     case boardSetup(BoardSetupAction)
-    case addTank(AddTankNodeAction)
+    case addObject(AddObjectAction)
 }
 
 extension Action: BitStreamCodable {
     private enum CodingKey: UInt32, CaseIterable {
         case gameAction
         case boardSetup
-        case addTank
+        case addObject
     }
     
     func encode(to bitStream: inout WritableBitStream) throws {
@@ -277,8 +271,8 @@ extension Action: BitStreamCodable {
         case .boardSetup(let boardSetup):
             bitStream.appendEnum(CodingKey.boardSetup)
             boardSetup.encode(to: &bitStream)
-        case .addTank(let addTankAction):
-            bitStream.appendEnum(CodingKey.addTank)
+        case .addObject(let addTankAction):
+            bitStream.appendEnum(CodingKey.addObject)
             try addTankAction.encode(to: &bitStream)
         }
     }
@@ -292,10 +286,9 @@ extension Action: BitStreamCodable {
         case .boardSetup:
             let boardAction = try BoardSetupAction(from: &bitStream)
             self = .boardSetup(boardAction)
-        case .addTank:
-            let addTankAction = try AddTankNodeAction(from: &bitStream)
-            self = .addTank(addTankAction)
+        case .addObject:
+            let addObjectAction = try AddObjectAction(from: &bitStream)
+            self = .addObject(addObjectAction)
         }
     }
-    
 }

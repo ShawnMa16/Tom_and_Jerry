@@ -77,8 +77,7 @@ extension GameViewController: ARSCNViewDelegate, ARSessionDelegate {
         DispatchQueue.main.async {
             self.updateFocusSquare(isObjectVisible: !self.padView.isHidden)
         }
-        
-        
+
         os_signpost(.begin, log: .render_loop, name: .render_loop, signpostID: .render_loop,
                     "Render loop started")
         os_signpost(.begin, log: .render_loop, name: .logic_update, signpostID: .render_loop,

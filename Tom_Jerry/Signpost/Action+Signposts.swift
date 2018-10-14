@@ -12,10 +12,10 @@ extension Action: CustomStringConvertible {
         switch self {
         case .gameAction(let action):
             switch action {
-            case .joyStickMoved:
+            case .JoyStickInMoving:
                 return "joy stick moved"
-            case .movement(_):
-                return "joy stick moved"
+            case .JoyStickWillorStopMoving(_):
+                return "shoud switch animation"
             }
         case .boardSetup(let setup):
             switch setup {
@@ -24,8 +24,8 @@ extension Action: CustomStringConvertible {
             case .boardLocation:
                 return "boardLocation"
             }
-        case .addTank:
-            return "tank added"
+        case .addObject:
+            return "object added"
         }
     }
 }
