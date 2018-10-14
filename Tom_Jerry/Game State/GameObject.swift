@@ -86,7 +86,8 @@ class GameObject: NSObject {
         
         attachGeometry(isHost: isHost)
         
-        //        self.objectRootNode.castsShadow = true
+        self.objectRootNode.castsShadow = true
+        self.geometryNode.castsShadow = true
         
     }
     
