@@ -184,6 +184,7 @@ extension MoveData: BitStreamCodable {
 struct AddObjectAction {
     var simdWorldTransform: float4x4
     var eulerAngles: float3
+    var isAlive: Bool
 }
 
 struct SwitchAnimation {
@@ -204,11 +205,13 @@ extension AddObjectAction: BitStreamCodable {
     init(from bitStream: inout ReadableBitStream) throws {
         simdWorldTransform = try float4x4(from: &bitStream)
         eulerAngles = try float3(from: &bitStream)
+        isAlive = try bitStream.readBool()
     }
     
     func encode(to bitStream: inout WritableBitStream) throws {
         simdWorldTransform.encode(to: &bitStream)
         eulerAngles.encode(to: &bitStream)
+        bitStream.appendBool(isAlive)
     }
 }
 

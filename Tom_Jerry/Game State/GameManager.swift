@@ -174,6 +174,10 @@ class GameManager: NSObject {
     /// - Tag: GameManager-update
     func update(timeDelta: TimeInterval) {
         processCommandQueue()
+        
+        if self.gameObjects.count > 1 {
+            switchToTom()
+        }
     }
     
     private func processCommandQueue() {
@@ -216,7 +220,7 @@ class GameManager: NSObject {
             objectNode.eulerAngles = SCNVector3(action.eulerAngles.x, action.eulerAngles.y, action.eulerAngles.z)
             objectNode.scale = SCNVector3(0.01, 0.01, 0.01)
             
-            let object = GameObject(node: objectNode, index: 0, alive: true, owner: owner, isHost: owner! == session?.host)
+            let object = GameObject(node: objectNode, index: 0, alive: action.isAlive, owner: owner, isHost: owner! == session?.host)
             
             print(object.objectRootNode.simdPosition)
             
@@ -242,6 +246,30 @@ class GameManager: NSObject {
         let object = self.gameObjects.filter { $0.owner == player}.first!
         
         object.swichAnimation(isMoving: isMoving)
+    }
+    
+    private func shouldSwichToTom() -> Bool {
+        let host = self.gameObjects.filter { $0.owner == session?.host}.first!
+        let nonHost = self.gameObjects.filter { $0.owner != session?.host}.first!
+        
+        let distance = host.objectRootNode.simdPosition - nonHost.objectRootNode.simdPosition
+        let length = sqrtf(distance.x * distance.x + distance.y * distance.y + distance.z * distance.z)
+        
+        if length < 0.2 && nonHost.isAlive {
+            nonHost.isAlive = false
+            return true
+        } else {return false}
+    }
+    
+    private func switchToTom() {
+        if shouldSwichToTom() {
+            let nonHost = self.gameObjects.filter { $0.owner != session?.host}.first!
+            if !nonHost.isAlive {
+                DispatchQueue.main.async {
+                    nonHost.shouldSwitchToTom()
+                }
+            }
+        }
     }
     
 }

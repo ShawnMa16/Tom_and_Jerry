@@ -107,9 +107,7 @@ class GameViewController: UIViewController {
     }
     
     var sessionState: SessionState = .setup
-    
-    var stickMovement: Int = 0
-    
+        
     init() {
         super.init(nibName: nil, bundle: nil)
     }
@@ -157,10 +155,8 @@ class GameViewController: UIViewController {
             let velocity = float3(
                 Float(data.velocity.x) * cos(cameraDirection!) - Float(data.velocity.y) * sin(cameraDirection!),
                 Float(data.velocity.y) * cos(cameraDirection!) + Float(data.velocity.x) * sin(cameraDirection!), Float(0))
-            
-            let v = GameVelocity(vector: velocity)
-            
-            let shouldBeSent = MoveData(velocity: v, angular: angular)
+            let movement = GameVelocity(vector: velocity)
+            let shouldBeSent = MoveData(velocity: movement, angular: angular)
             
             // controll tank's movement
             self.gameManager?.moveObject(player: self.myself, movement: shouldBeSent)
@@ -327,7 +323,7 @@ class GameViewController: UIViewController {
         addButton.isHidden = true
         padView.isHidden = false
         
-        let addObject = AddObjectAction(simdWorldTransform: self.focusSquare.simdWorldTransform, eulerAngles: float3(0, self.focusSquare.eulerAngles.y + 180.0 * .pi / 180, 0))
+        let addObject = AddObjectAction(simdWorldTransform: self.focusSquare.simdWorldTransform, eulerAngles: float3(0, self.focusSquare.eulerAngles.y + 180.0 * .pi / 180, 0), isAlive: true)
         
         // send add tank action to all peer
         self.gameManager?.send(addObjectAction: addObject)

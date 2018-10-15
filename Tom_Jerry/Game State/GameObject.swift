@@ -17,11 +17,18 @@ struct ObjectAnimations {
     
     var animations = [String: CAAnimation]()
     
-    init(isHost: Bool) {
-        let idleSceneName = isHost ? "art.scnassets/Jerry-Idle" : "art.scnassets/Tom-Idle"
-        let runningSceneName = isHost ? "art.scnassets/Jerry-Running" : "art.scnassets/Tom-Running"
-        let idleIdentifier = isHost ? "Jerry-Idle-1" : "Tom-Idle-1"
-        let runningIdentifier = isHost ? "Jerry-Running-1" : "Tom-Running-1"
+    init(isHost: Bool, isAlive: Bool) {
+        var idleSceneName = isHost ? "art.scnassets/Jerry-Idle" : "art.scnassets/Cheese_Idle"
+        var runningSceneName = isHost ? "art.scnassets/Jerry-Running" : "art.scnassets/Cheese_Running"
+        var idleIdentifier = isHost ? "Jerry-Idle-1" : "Cheese_Idle-1"
+        var runningIdentifier = isHost ? "Jerry-Running-1" : "Cheese_Running-1"
+        
+        if !isAlive {
+            idleSceneName = "art.scnassets/Tom-Idle"
+            runningSceneName = "art.scnassets/Tom-Running"
+            idleIdentifier = "Tom-Idle-1"
+            runningIdentifier = "Tom-Running-1"
+        }
         
         let idleURL = Bundle.main.url(forResource: idleSceneName, withExtension: "dae")!
         let runningURL = Bundle.main.url(forResource: runningSceneName, withExtension: "dae")!
@@ -80,17 +87,25 @@ class GameObject: NSObject {
             GameObject.indexCounter += 1
         }
         
-        self.animations = ObjectAnimations(isHost: isHost)
+        self.animations = ObjectAnimations(isHost: isHost, isAlive: isAlive)
         
         super.init()
         
         attachGeometry(isHost: isHost)
         
-        self.objectRootNode.castsShadow = true
-//        self.geometryNode.castsShadow = true
-        
         castShadow()
         
+    }
+    
+    private func loadCheese() -> SCNNode {
+        
+        let idleScene = SCNScene(named: "art.scnassets/Cheese_Idle.dae")!
+        let rootNode = SCNNode()
+        
+        for childNode in idleScene.rootNode.childNodes {
+            rootNode.addChildNode(childNode)
+        }
+        return rootNode
     }
     
     private func loadTom() -> SCNNode {
@@ -117,12 +132,14 @@ class GameObject: NSObject {
     
     private func attachGeometry(isHost: Bool) {
         // clone the object node to geometry node
-        self.geometryNode = isHost ? loadJerry().clone() : loadTom().clone()
+        self.geometryNode = isHost ? loadJerry().clone() : loadCheese().clone()
         self.objectRootNode.addChildNode(self.geometryNode)
     }
     
     private func castShadow() {
-        let shadowPlane = SCNPlane(width: 20.0, height: 20.0)
+        self.objectRootNode.castsShadow = true
+        
+        let shadowPlane = SCNPlane(width: 15.0, height: 15.0)
         shadowPlane.materials.first?.colorBufferWriteMask = SCNColorMask(rawValue:0)
         self.shadowPlanNode = SCNNode(geometry: shadowPlane)
         self.shadowPlanNode!.transform = SCNMatrix4MakeRotation(-Float.pi/2, 1, 0, 0)
@@ -134,6 +151,17 @@ class GameObject: NSObject {
         let stopKey = isMoving ? "idle" : "running"
         self.geometryNode.addAnimation(self.animations.animations[beginKey]!, forKey: beginKey)
         self.geometryNode.removeAnimation(forKey: stopKey, blendOutDuration: CGFloat(0.5))
+    }
+    
+    func shouldSwitchToTom() {
+        self.geometryNode.removeAllAnimations()
+        self.geometryNode.removeFromParentNode()
+        self.geometryNode = nil
+        
+        self.geometryNode = loadTom().clone()
+        self.objectRootNode.addChildNode(self.geometryNode)
+        
+        self.animations = ObjectAnimations(isHost: false, isAlive: false)
     }
     
 }
