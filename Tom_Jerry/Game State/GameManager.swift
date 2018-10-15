@@ -229,12 +229,12 @@ class GameManager: NSObject {
     func moveObject(player: Player, movement: MoveData) {
         let object = self.gameObjects.filter { $0.owner == player}.first!
         
-        let x = object.objectRootNode.position.x + movement.velocity.vector.x * Float(joystickVelocityMultiplier)
-        let y = object.objectRootNode.position.y
-        let z = object.objectRootNode.position.z - movement.velocity.vector.y * Float(joystickVelocityMultiplier)
+        let x = object.objectRootNode.simdPosition.x + movement.velocity.vector.x * Float(joystickVelocityMultiplier)
+        let y = object.objectRootNode.simdPosition.y
+        let z = object.objectRootNode.simdPosition.z - movement.velocity.vector.y * Float(joystickVelocityMultiplier)
         let angular = movement.angular
+        object.objectRootNode.simdPosition = float3(x: x, y: y, z: z)
         
-        object.objectRootNode.position = SCNVector3(x: x, y: y, z: z)
         object.objectRootNode.eulerAngles.y = angular + Float(180.0.degreesToRadians)
     }
     

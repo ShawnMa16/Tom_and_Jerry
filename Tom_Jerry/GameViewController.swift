@@ -150,12 +150,13 @@ class GameViewController: UIViewController {
             let cameraDirection = self.arscnView.session.currentFrame?.camera.eulerAngles.y
             let angular = Float(data.angular) + cameraDirection!
             
-            //            let oreitationY = self.focusSquare.orientation.w - (self.focusSquare.orientation.y)
-            //            let oreitationX = self.focusSquare.orientation.w - abs(self.focusSquare.orientation.y)
-            //            print(oreitation)
-            //            print(self.arscnView.session.currentFrame?.camera.eulerAngles.y)
+            // roate the character's movement oreitation with camera's eulerAngles.y
+            // x′= xcosθ − ysinθ
+            // y′= ycosθ + xsinθ
             
-            let velocity = float3(Float(data.velocity.x), Float(data.velocity.y), Float(0))
+            let velocity = float3(
+                Float(data.velocity.x) * cos(cameraDirection!) - Float(data.velocity.y) * sin(cameraDirection!),
+                Float(data.velocity.y) * cos(cameraDirection!) + Float(data.velocity.x) * sin(cameraDirection!), Float(0))
             
             let v = GameVelocity(vector: velocity)
             
