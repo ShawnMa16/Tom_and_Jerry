@@ -149,14 +149,14 @@ class GameViewController: UIViewController {
             // object facing orientation
             let cameraDirection = self.arscnView.session.currentFrame?.camera.eulerAngles.y
             let angular = Float(data.angular) + cameraDirection!
-
-//            let oreitationY = self.focusSquare.orientation.w - (self.focusSquare.orientation.y)
-//            let oreitationX = self.focusSquare.orientation.w - abs(self.focusSquare.orientation.y)
-//            print(oreitation)
-//            print(self.arscnView.session.currentFrame?.camera.eulerAngles.y)
+            
+            //            let oreitationY = self.focusSquare.orientation.w - (self.focusSquare.orientation.y)
+            //            let oreitationX = self.focusSquare.orientation.w - abs(self.focusSquare.orientation.y)
+            //            print(oreitation)
+            //            print(self.arscnView.session.currentFrame?.camera.eulerAngles.y)
             
             let velocity = float3(Float(data.velocity.x), Float(data.velocity.y), Float(0))
-
+            
             let v = GameVelocity(vector: velocity)
             
             let shouldBeSent = MoveData(velocity: v, angular: angular)
@@ -326,20 +326,15 @@ class GameViewController: UIViewController {
         addButton.isHidden = true
         padView.isHidden = false
         
-        let objectNode = SCNNode()
-        objectNode.simdWorldTransform = self.focusSquare.simdWorldTransform
-        
-        objectNode.eulerAngles = SCNVector3(0, self.focusSquare.eulerAngles.y + 180.0 * .pi / 180, 0)
-        objectNode.scale = SCNVector3(0.01, 0.01, 0.01)
-        
-        let addObject = AddObjectAction(simdWorldTransform: objectNode.simdWorldTransform, eulerAngles: float3(0, self.focusSquare.eulerAngles.y + 180.0 * .pi / 180, 0))
+        let addObject = AddObjectAction(simdWorldTransform: self.focusSquare.simdWorldTransform, eulerAngles: float3(0, self.focusSquare.eulerAngles.y + 180.0 * .pi / 180, 0))
         
         // send add tank action to all peer
         self.gameManager?.send(addObjectAction: addObject)
         // add tank to scene
         DispatchQueue.main.async {
-            self.gameManager?.createObject(objectNode: objectNode, owner: self.myself)
+            self.gameManager?.createObject(addNodeAction: addObject, owner: self.myself)
         }
+        
     }
     
     

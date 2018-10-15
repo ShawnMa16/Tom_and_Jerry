@@ -162,13 +162,8 @@ class GameManager: NSObject {
         case .addObject(let addObjectAction):
             if let player = command.player {
                 // should send create tank action here
-                let objectNode = SCNNode()
-                objectNode.simdWorldTransform = addObjectAction.simdWorldTransform
-                objectNode.eulerAngles = SCNVector3(addObjectAction.eulerAngles.x, addObjectAction.eulerAngles.y, addObjectAction.eulerAngles.z)
-                objectNode.scale = SCNVector3(0.01, 0.01, 0.01)
-                
                 DispatchQueue.main.async {
-                    self.createObject(objectNode: objectNode, owner: player)
+                    self.createObject(addNodeAction: addObjectAction, owner: player)
                 }
             }
         }
@@ -212,13 +207,23 @@ class GameManager: NSObject {
     }
     
     // game object managing
-    func createObject(objectNode: SCNNode, owner: Player?) {
-        let object = GameObject(node: objectNode, index: 0, alive: true, owner: owner, isHost: owner! == session?.host)
-        print(object.objectRootNode.simdPosition)
-        // insert new GameObject() to game scene
-        self.gameObjects.insert(object)
+    
+    func createObject(addNodeAction: AddObjectAction?, owner: Player?) {
         
-        self.scene.rootNode.addChildNode(object.objectRootNode)
+        if let action = addNodeAction {
+            let objectNode = SCNNode()
+            objectNode.simdWorldTransform = action.simdWorldTransform
+            objectNode.eulerAngles = SCNVector3(action.eulerAngles.x, action.eulerAngles.y, action.eulerAngles.z)
+            objectNode.scale = SCNVector3(0.01, 0.01, 0.01)
+            
+            let object = GameObject(node: objectNode, index: 0, alive: true, owner: owner, isHost: owner! == session?.host)
+            
+            print(object.objectRootNode.simdPosition)
+            
+            self.gameObjects.insert(object)
+            
+            self.scene.rootNode.addChildNode(object.objectRootNode)
+        }
     }
     
     func moveObject(player: Player, movement: MoveData) {
