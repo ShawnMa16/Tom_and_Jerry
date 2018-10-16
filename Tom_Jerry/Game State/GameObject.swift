@@ -139,7 +139,7 @@ class GameObject: NSObject {
     private func castShadow() {
         self.objectRootNode.castsShadow = true
         
-        let shadowPlane = SCNPlane(width: 25.0, height: 25.0)
+        let shadowPlane = SCNPlane(width: 30.0, height: 30.0)
         shadowPlane.materials.first?.colorBufferWriteMask = SCNColorMask(rawValue:0)
         self.shadowPlanNode = SCNNode(geometry: shadowPlane)
         self.shadowPlanNode!.transform = SCNMatrix4MakeRotation(-Float.pi/2, 1, 0, 0)
