@@ -75,10 +75,10 @@ class GameManager: NSObject {
         mainLightNode!.light!.type = .spot
         mainLightNode!.light!.castsShadow = true
         mainLightNode!.light!.shadowMode = .deferred
-        mainLightNode!.position = SCNVector3(x: -1, y: 10, z: 1)
-        mainLightNode!.eulerAngles = SCNVector3(-Float.pi/2, 0, 0)
+        mainLightNode!.position = SCNVector3(x: -6, y: 10, z: 1)
+        mainLightNode!.eulerAngles = SCNVector3(-Float.pi/2, 0, Float.pi/8)
         mainLightNode!.light!.shadowSampleCount = 64 //remove flickering of shadow and soften shadow
-        mainLightNode!.light!.shadowMapSize = CGSize(width: 3072, height: 3072)
+        mainLightNode!.light!.shadowMapSize = CGSize(width: 4096, height: 4096)
         self.scene.rootNode.addChildNode(mainLightNode!)
         
         ambientLightNode = SCNNode()
@@ -218,7 +218,7 @@ class GameManager: NSObject {
             let objectNode = SCNNode()
             objectNode.simdWorldTransform = action.simdWorldTransform
             objectNode.eulerAngles = SCNVector3(action.eulerAngles.x, action.eulerAngles.y, action.eulerAngles.z)
-            objectNode.scale = SCNVector3(0.01, 0.01, 0.01)
+            objectNode.scale = SCNVector3(0.02, 0.02, 0.02)
             
             let object = GameObject(node: objectNode, index: 0, alive: action.isAlive, owner: owner, isHost: owner! == session?.host)
             
