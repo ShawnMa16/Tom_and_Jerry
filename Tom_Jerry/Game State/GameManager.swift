@@ -267,9 +267,36 @@ class GameManager: NSObject {
             if !nonHost.isAlive {
                 DispatchQueue.main.async {
                     nonHost.shouldSwitchToTom()
+                    
+                    let geometryNode = nonHost.objectRootNode!
+                    self.createExplosion(position: geometryNode.presentation.position,
+                                         rotation: geometryNode.presentation.rotation)
+
+                    print("geometryNode:",geometryNode)
                 }
             }
         }
+    }
+    
+    //particle explosion effect
+    private func createExplosion(position: SCNVector3, rotation: SCNVector4) {
+        let explosion =
+            SCNParticleSystem(named: "Explode.scnp", inDirectory:
+                nil)!
+        //explosion.emitterShape = geometry
+        explosion.birthLocation = .surface
+        
+        let rotationMatrix =
+            SCNMatrix4MakeRotation(rotation.w, rotation.x,
+                                   rotation.y, rotation.z)
+        let translationMatrix =
+            SCNMatrix4MakeTranslation(position.x, position.y,
+                                      position.z)
+        let transformMatrix =
+            SCNMatrix4Mult(rotationMatrix, translationMatrix)
+        
+        scene.addParticleSystem(explosion, transform:
+            transformMatrix)
     }
     
 }
