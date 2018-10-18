@@ -342,6 +342,7 @@ class GameViewController: UIViewController,  GameViewControllerDelegate{
     
     
     @objc func addObject() {
+        self.gameManager?.gameIsOverDelegate = self
 
         let addObject = AddObjectAction(simdWorldTransform: self.focusSquare.simdWorldTransform, eulerAngles: float3(0, self.focusSquare.eulerAngles.y + 180.0 * .pi / 180, 0), isAlive: true)
         
@@ -364,7 +365,6 @@ class GameViewController: UIViewController,  GameViewControllerDelegate{
     @objc func startGame() {
         let gameSession = NetworkSession(myself: myself, asServer: true, host: myself)
         self.gameManager = GameManager(sceneView: self.arscnView, session: gameSession)
-        self.gameManager?.gameIsOverDelegate = self
     }
     
     func showAlert(title: String, message: String? = nil, actions: [UIAlertAction]? = nil) {

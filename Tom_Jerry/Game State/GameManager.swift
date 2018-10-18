@@ -281,7 +281,7 @@ class GameManager: NSObject {
             let distance = host.objectRootNode.simdPosition - nonHost.objectRootNode.simdPosition
             let length = sqrtf(distance.x * distance.x + distance.y * distance.y + distance.z * distance.z)
             
-            if length < 0.4 {
+            if length < 0.2 {
                 gameIsOverDelegate?.gameIsOver()
             }
         }
