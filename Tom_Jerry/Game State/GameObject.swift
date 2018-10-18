@@ -158,6 +158,7 @@ class GameObject: NSObject {
     func shouldSwitchToTom() {
         self.geometryNode.removeAllAnimations()
         self.geometryNode.removeFromParentNode()
+        self.shadowPlanNode?.removeFromParentNode()
         self.geometryNode = nil
         self.shadowPlanNode = nil
         
