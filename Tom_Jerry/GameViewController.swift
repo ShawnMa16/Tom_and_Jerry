@@ -133,6 +133,9 @@ class GameViewController: UIViewController {
         gameStartViewContoller.delegate = self
         overlayView = gameStartViewContoller.view
         
+        renderRoot.name = "_renderRoot"
+        arscnView.scene.rootNode.addChildNode(renderRoot)
+        
         view.addSubview(overlayView!)
         view.bringSubviewToFront(overlayView!)
         
