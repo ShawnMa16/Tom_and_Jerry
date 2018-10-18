@@ -14,7 +14,11 @@ import MultipeerConnectivity
 import simd
 import os.signpost
 
-class GameViewController: UIViewController {
+protocol GameViewControllerDelegate: class {
+    func gameIsOver()
+}
+
+class GameViewController: UIViewController,  GameViewControllerDelegate{
     
     enum SessionState {
         case setup
@@ -53,6 +57,12 @@ class GameViewController: UIViewController {
         view.isMultipleTouchEnabled = true
         view.backgroundColor = .clear
         view.isHidden = true
+        return view
+    }()
+    
+    let gameOverView: UIImageView = {
+        let view = UIImageView()
+        view.image = UIImage(named: "gameOver")
         return view
     }()
     
@@ -121,6 +131,7 @@ class GameViewController: UIViewController {
         view.addSubview(arscnView)
         view.addSubview(padView)
         view.addSubview(addButton)
+        view.addSubview(gameOverView)
         
         view.addSubview(sessionInfoView)
         sessionInfoView.addSubview(sessionInfoLabel)
@@ -131,6 +142,7 @@ class GameViewController: UIViewController {
         setupPadScene()
         
         gameStartViewContoller.delegate = self
+        
         overlayView = gameStartViewContoller.view
         
         renderRoot.name = "_renderRoot"
@@ -316,6 +328,13 @@ class GameViewController: UIViewController {
             make.bottom.equalTo(arscnView.snp.bottom).offset(-50)
             make.height.equalTo(44)
         }
+        
+        gameOverView.snp.makeConstraints { (make) in
+            make.width.height.equalTo(300)
+            make.center.equalToSuperview()
+        }
+        
+        gameOverView.isHidden = true
         addButton.isHidden = false
         addButton.addTarget(self, action: #selector(addObject), for: .touchUpInside)
         
@@ -345,6 +364,7 @@ class GameViewController: UIViewController {
     @objc func startGame() {
         let gameSession = NetworkSession(myself: myself, asServer: true, host: myself)
         self.gameManager = GameManager(sceneView: self.arscnView, session: gameSession)
+        self.gameManager?.gameIsOverDelegate = self
     }
     
     func showAlert(title: String, message: String? = nil, actions: [UIAlertAction]? = nil) {
@@ -472,6 +492,15 @@ class GameViewController: UIViewController {
         }) { _ in
             self.overlayView!.isUserInteractionEnabled = false
             UIApplication.shared.isIdleTimerDisabled = true
+        }
+    }
+    
+    func gameIsOver() {
+        DispatchQueue.main.async {
+            
+            UIView.animate(withDuration: 0.3, delay: 0, options: .transitionCrossDissolve, animations: {
+                self.gameOverView.isHidden = false
+            }, completion: nil)
         }
     }
 
