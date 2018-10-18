@@ -159,6 +159,8 @@ class GameObject: NSObject {
         self.geometryNode.removeAllAnimations()
         self.geometryNode.removeFromParentNode()
         self.shadowPlanNode?.removeFromParentNode()
+        self.shadowPlanNode?.geometry = nil
+        
         self.geometryNode = nil
         self.shadowPlanNode = nil
         
