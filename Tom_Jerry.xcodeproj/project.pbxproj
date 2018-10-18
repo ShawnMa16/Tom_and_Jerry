@@ -39,8 +39,6 @@
 		2907864C216FA1FE00DD6E76 /* simd+Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2907862C216FA1FE00DD6E76 /* simd+Helpers.swift */; };
 		2907864D216FA1FE00DD6E76 /* UserDefaults+Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2907862D216FA1FE00DD6E76 /* UserDefaults+Helpers.swift */; };
 		29078651216FA4E300DD6E76 /* art.scnassets in Resources */ = {isa = PBXBuildFile; fileRef = 29078650216FA4E300DD6E76 /* art.scnassets */; };
-		999107232177B27D00F08E60 /* spark.png in Resources */ = {isa = PBXBuildFile; fileRef = 999107212177B27D00F08E60 /* spark.png */; };
-		999107242177B27D00F08E60 /* Explode.scnp in Resources */ = {isa = PBXBuildFile; fileRef = 999107222177B27D00F08E60 /* Explode.scnp */; };
 		EB81471FFE4BA14A9B951708 /* Pods_Tom_Jerry.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6ECC8192803D6273CE3EC802 /* Pods_Tom_Jerry.framework */; };
 /* End PBXBuildFile section */
 
@@ -82,8 +80,6 @@
 		6ECC8192803D6273CE3EC802 /* Pods_Tom_Jerry.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Tom_Jerry.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		85061770393C122FF1D29013 /* Pods-Tom_Jerry.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Tom_Jerry.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Tom_Jerry/Pods-Tom_Jerry.debug.xcconfig"; sourceTree = "<group>"; };
 		991629B3D5B3DCCC41CEAB5F /* Pods-Tom_Jerry.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Tom_Jerry.release.xcconfig"; path = "Pods/Target Support Files/Pods-Tom_Jerry/Pods-Tom_Jerry.release.xcconfig"; sourceTree = "<group>"; };
-		999107212177B27D00F08E60 /* spark.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = spark.png; sourceTree = "<group>"; };
-		999107222177B27D00F08E60 /* Explode.scnp */ = {isa = PBXFileReference; lastKnownFileType = file.scp; path = Explode.scnp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -128,7 +124,6 @@
 		290785F3216FA14200DD6E76 /* Tom_Jerry */ = {
 			isa = PBXGroup;
 			children = (
-				9991071C2177AF8200F08E60 /* Particles */,
 				290785F4216FA14200DD6E76 /* AppDelegate.swift */,
 				2907860A216FA1FD00DD6E76 /* GameViewController.swift */,
 				2907860E216FA1FD00DD6E76 /* GameViewController+ARSCNViewDelegate.swift */,
@@ -230,15 +225,6 @@
 			path = "Game State";
 			sourceTree = "<group>";
 		};
-		9991071C2177AF8200F08E60 /* Particles */ = {
-			isa = PBXGroup;
-			children = (
-				999107212177B27D00F08E60 /* spark.png */,
-				999107222177B27D00F08E60 /* Explode.scnp */,
-			);
-			path = Particles;
-			sourceTree = "<group>";
-		};
 		B0D95A5BF0454604BAE4C027 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
@@ -308,9 +294,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				29078651216FA4E300DD6E76 /* art.scnassets in Resources */,
-				999107232177B27D00F08E60 /* spark.png in Resources */,
 				290785FF216FA14400DD6E76 /* LaunchScreen.storyboard in Resources */,
-				999107242177B27D00F08E60 /* Explode.scnp in Resources */,
 				290785FC216FA14400DD6E76 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
