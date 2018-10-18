@@ -209,7 +209,7 @@ class GameManager: NSObject {
             let object = GameObject(node: objectNode, index: 0, alive: action.isAlive, owner: owner, isHost: owner! == session?.host)
             
             self.gameObjects.insert(object)
-            
+                        
             self.scene.rootNode.addChildNode(object.objectRootNode)
         }
     }
@@ -232,19 +232,6 @@ class GameManager: NSObject {
         object.swichAnimation(isMoving: isMoving)
     }
     
-    private func createShadowPlane() {
-        let flourPlane = SCNFloor()
-        let groundPlane = SCNNode()
-        let groundMaterial = SCNMaterial()
-        groundMaterial.lightingModel = .constant
-        groundMaterial.writesToDepthBuffer = true
-        groundMaterial.colorBufferWriteMask = []
-        groundMaterial.isDoubleSided = true
-        flourPlane.materials = [groundMaterial]
-        groundPlane.geometry = flourPlane
-        
-        self.scene.rootNode.addChildNode(groundPlane)
-    }
     
     private func shouldSwichToTom() -> Bool {
         let host = self.gameObjects.filter { $0.owner == session?.host}.first!
@@ -269,7 +256,6 @@ class GameManager: NSObject {
                     let geometryNode = nonHost.objectRootNode!
                     self.createExplosion(position: geometryNode.presentation.position,
                                          rotation: geometryNode.presentation.rotation)
-                    print("geometryNode:",geometryNode)
                 }
             }
         }

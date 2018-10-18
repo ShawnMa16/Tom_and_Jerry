@@ -323,15 +323,17 @@ class GameViewController: UIViewController {
     
     
     @objc func addObject() {
-        addButton.isHidden = true
-        padView.isHidden = false
-        
+
         let addObject = AddObjectAction(simdWorldTransform: self.focusSquare.simdWorldTransform, eulerAngles: float3(0, self.focusSquare.eulerAngles.y + 180.0 * .pi / 180, 0), isAlive: true)
         
         // send add tank action to all peer
         self.gameManager?.send(addObjectAction: addObject)
         // add tank to scene
         DispatchQueue.main.async {
+            self.addButton.isHidden = true
+            self.padView.isHidden = false
+            self.focusSquare.isHidden = true
+            
             self.gameManager?.createObject(addNodeAction: addObject, owner: self.myself)
         }
         
