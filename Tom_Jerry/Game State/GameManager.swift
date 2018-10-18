@@ -34,6 +34,7 @@ class GameManager: NSObject {
     private let session: NetworkSession?
     private var scene: SCNScene
     
+    private var shadowPlanNode: SCNNode?
     private var secondaryLightNode: SCNNode?
     private var mainLightNode: SCNNode?
     private var ambientLightNode: SCNNode?
@@ -190,6 +191,8 @@ class GameManager: NSObject {
         
         delegate?.managerDidStartGame(self)
         isInitialized = true
+        
+//        createShadowPlane()
         setupLight()
     }
     
@@ -204,8 +207,6 @@ class GameManager: NSObject {
             objectNode.scale = SCNVector3(0.02, 0.02, 0.02)
             
             let object = GameObject(node: objectNode, index: 0, alive: action.isAlive, owner: owner, isHost: owner! == session?.host)
-            
-            print(object.objectRootNode.simdPosition)
             
             self.gameObjects.insert(object)
             
@@ -231,6 +232,20 @@ class GameManager: NSObject {
         object.swichAnimation(isMoving: isMoving)
     }
     
+    private func createShadowPlane() {
+        let flourPlane = SCNFloor()
+        let groundPlane = SCNNode()
+        let groundMaterial = SCNMaterial()
+        groundMaterial.lightingModel = .constant
+        groundMaterial.writesToDepthBuffer = true
+        groundMaterial.colorBufferWriteMask = []
+        groundMaterial.isDoubleSided = true
+        flourPlane.materials = [groundMaterial]
+        groundPlane.geometry = flourPlane
+        
+        self.scene.rootNode.addChildNode(groundPlane)
+    }
+    
     private func shouldSwichToTom() -> Bool {
         let host = self.gameObjects.filter { $0.owner == session?.host}.first!
         let nonHost = self.gameObjects.filter { $0.owner != session?.host}.first!
@@ -254,7 +269,6 @@ class GameManager: NSObject {
                     let geometryNode = nonHost.objectRootNode!
                     self.createExplosion(position: geometryNode.presentation.position,
                                          rotation: geometryNode.presentation.rotation)
-
                     print("geometryNode:",geometryNode)
                 }
             }

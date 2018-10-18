@@ -93,8 +93,6 @@ class GameObject: NSObject {
         
         attachGeometry(isHost: isHost)
         
-        self.objectRootNode.castsShadow = true
-
         castShadow()
         
     }
@@ -141,7 +139,7 @@ class GameObject: NSObject {
     private func castShadow() {
         self.objectRootNode.castsShadow = true
         
-        let shadowPlane = SCNPlane(width: 18.0, height: 18.0)
+        let shadowPlane = SCNPlane(width: 20.0, height: 20.0)
         shadowPlane.materials.first?.colorBufferWriteMask = SCNColorMask(rawValue:0)
         self.shadowPlanNode = SCNNode(geometry: shadowPlane)
         self.shadowPlanNode!.transform = SCNMatrix4MakeRotation(-Float.pi/2, 1, 0, 0)
@@ -158,8 +156,6 @@ class GameObject: NSObject {
     func shouldSwitchToTom() {
         self.geometryNode.removeAllAnimations()
         self.geometryNode.removeFromParentNode()
-        self.shadowPlanNode?.removeFromParentNode()
-        self.shadowPlanNode?.geometry = nil
         
         self.geometryNode = nil
         self.shadowPlanNode = nil
@@ -172,11 +168,7 @@ class GameObject: NSObject {
         // change shadow plane size for Tom
         let shadowPlane = SCNPlane(width: 30.0, height: 30.0)
         shadowPlane.materials.first?.colorBufferWriteMask = SCNColorMask(rawValue:0)
-        self.shadowPlanNode = SCNNode(geometry: shadowPlane)
-        self.objectRootNode.addChildNode(self.shadowPlanNode!)
-        
-        
-        print("self.geometryNode",self.geometryNode)
+        self.shadowPlanNode?.geometry = shadowPlane
     }
     
 }
