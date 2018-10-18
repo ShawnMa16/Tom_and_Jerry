@@ -62,7 +62,7 @@ class GameViewController: UIViewController,  GameViewControllerDelegate{
     
     let gameOverView: UIImageView = {
         let view = UIImageView()
-        view.image = UIImage(named: "gameOver")
+        view.image = UIImage(named: "gameOver.png")
         return view
     }()
     
@@ -496,8 +496,10 @@ class GameViewController: UIViewController,  GameViewControllerDelegate{
     }
     
     func gameIsOver() {
+        print("game over 2")
         DispatchQueue.main.async {
-            
+            self.gameOverView.isHidden = false
+            print("game over 3")
             UIView.animate(withDuration: 0.3, delay: 0, options: .transitionCrossDissolve, animations: {
                 self.gameOverView.isHidden = false
             }, completion: nil)

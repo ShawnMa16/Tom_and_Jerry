@@ -259,7 +259,7 @@ class GameManager: NSObject {
                     self.createExplosion(position: geometryNode.presentation.position,
                                          rotation: geometryNode.presentation.rotation)
                 }
-                DispatchQueue.main.asyncAfter(deadline: .now() + 5)  {
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.5)  {
                     nonHost.shouldSwitchToTom()
                 }
                 
@@ -282,6 +282,7 @@ class GameManager: NSObject {
             let length = sqrtf(distance.x * distance.x + distance.y * distance.y + distance.z * distance.z)
             
             if length < 0.4 {
+                print("game Over")
                 gameIsOverDelegate?.gameIsOver()
             }
         }
