@@ -253,7 +253,7 @@ class GameManager: NSObject {
         let distance = host.objectRootNode.simdPosition - nonHost.objectRootNode.simdPosition
         let length = sqrtf(distance.x * distance.x + distance.y * distance.y + distance.z * distance.z)
         
-        if length < 0.2 && nonHost.isAlive {
+        if length < 0.4 && nonHost.isAlive {
             nonHost.isAlive = false
             return true
         } else {return false}
