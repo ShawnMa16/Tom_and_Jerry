@@ -45,10 +45,14 @@ class GameManager: NSObject {
     private var gameCommands = [GameCommand]()
     private let commandsLock = NSLock()
     
+    private var shoudGameOver = false
+    
     let currentPlayer = UserDefaults.standard.myself
     
     let isNetworked: Bool
     let isServer: Bool
+    
+    weak var gameIsOverDelegate: GameViewControllerDelegate?
     
     init(sceneView: SCNView, session: NetworkSession?) {
         self.scene = sceneView.scene!
@@ -161,6 +165,7 @@ class GameManager: NSObject {
         
         if self.gameObjects.count > 1 {
             switchToTom()
+            gameOver(self.shoudGameOver)
         }
     }
     
@@ -192,7 +197,6 @@ class GameManager: NSObject {
         delegate?.managerDidStartGame(self)
         isInitialized = true
         
-//        createShadowPlane()
         setupLight()
     }
     
@@ -209,7 +213,7 @@ class GameManager: NSObject {
             let object = GameObject(node: objectNode, index: 0, alive: action.isAlive, owner: owner, isHost: owner! == session?.host)
             
             self.gameObjects.insert(object)
-                        
+            
             self.scene.rootNode.addChildNode(object.objectRootNode)
         }
     }
@@ -251,12 +255,34 @@ class GameManager: NSObject {
             let nonHost = self.gameObjects.filter { $0.owner != session?.host}.first!
             if !nonHost.isAlive {
                 DispatchQueue.main.async {
-                    nonHost.shouldSwitchToTom()
-                    
                     let geometryNode = nonHost.objectRootNode!
                     self.createExplosion(position: geometryNode.presentation.position,
                                          rotation: geometryNode.presentation.rotation)
                 }
+                DispatchQueue.main.asyncAfter(deadline: .now() + 5)  {
+                    nonHost.shouldSwitchToTom()
+                }
+                
+                DispatchQueue.main.asyncAfter(deadline: .now() + 5) { // change 2 to desired number of seconds
+                    // Your code with delay
+                    self.shoudGameOver = true
+                }
+            }
+
+        }
+    }
+    
+    private func gameOver(_ shouldStartEndingGame: Bool) {
+        
+        if shouldStartEndingGame {
+            let host = self.gameObjects.filter { $0.owner == session?.host}.first!
+            let nonHost = self.gameObjects.filter { $0.owner != session?.host}.first!
+            
+            let distance = host.objectRootNode.simdPosition - nonHost.objectRootNode.simdPosition
+            let length = sqrtf(distance.x * distance.x + distance.y * distance.y + distance.z * distance.z)
+            
+            if length < 0.4 {
+                gameIsOverDelegate?.gameIsOver()
             }
         }
     }
