@@ -469,6 +469,7 @@ class GameViewController: UIViewController {
             UIApplication.shared.isIdleTimerDisabled = true
         }
     }
+
 }
 
 extension GameViewController: GameManagerDelegate {

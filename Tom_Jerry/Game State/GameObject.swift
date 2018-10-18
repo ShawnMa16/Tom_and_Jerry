@@ -162,6 +162,14 @@ class GameObject: NSObject {
         self.objectRootNode.addChildNode(self.geometryNode)
         
         self.animations = ObjectAnimations(isHost: false, isAlive: false)
+        
+        print("self.geometryNode",self.geometryNode)
     }
+    
+    func getGeometryNode() -> SCNNode{
+        print("getGeometryNode",self.geometryNode)
+        return self.geometryNode
+    }
+   
     
 }
