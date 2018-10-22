@@ -46,11 +46,15 @@ class GameManager: NSObject {
     private let commandsLock = NSLock()
     
     private var shoudGameOver = false
+    private var jerryShouldLookBehind = true
     
     let currentPlayer = UserDefaults.standard.myself
     
     let isNetworked: Bool
     let isServer: Bool
+    
+    private let musicNames = ["BeginningMusic"]
+    var audioPlayers = [AVAudioPlayer]()
     
     weak var gameIsOverDelegate: GameViewControllerDelegate?
     
@@ -65,6 +69,8 @@ class GameManager: NSObject {
         
         self.session?.delegate = self
     }
+    
+    // setup lights for the scene
     
     private func setupLight() {
         
@@ -165,7 +171,7 @@ class GameManager: NSObject {
         
         if self.gameObjects.count > 1 {
             switchToTom()
-            gameOver(self.shoudGameOver)
+            gameOver()
         }
     }
     
@@ -188,6 +194,8 @@ class GameManager: NSObject {
         }
     }
     
+    // start game
+    
     func startGame() {
         // Start advertising game
         if let session = session, session.isServer {
@@ -198,6 +206,26 @@ class GameManager: NSObject {
         isInitialized = true
         
         setupLight()
+        loadMusic()
+    }
+    
+    
+    // load music from source
+    
+    private func loadMusic() {
+        
+        for name in self.musicNames {
+            do {
+                guard let url = Bundle.main.url(forResource: name, withExtension: "mp3") else { return }
+                
+                let audioPlayer = try AVAudioPlayer(contentsOf: url, fileTypeHint: AVFileType.mp3.rawValue)
+                
+                self.audioPlayers.append(audioPlayer)
+                
+            } catch {
+                print("load music failed")
+            }
+        }
     }
     
     // game object managing
@@ -233,7 +261,7 @@ class GameManager: NSObject {
     func switchAnimation(player: Player, isMoving: Bool) {
         let object = self.gameObjects.filter { $0.owner == player}.first!
         
-        object.swichAnimation(isMoving: isMoving)
+        object.switchBetweenIdleAndRunning(isMoving: isMoving)
     }
     
     
@@ -268,22 +296,34 @@ class GameManager: NSObject {
                     self.shoudGameOver = true
                 }
             }
-
+            
         }
     }
     
-    private func gameOver(_ shouldStartEndingGame: Bool) {
+    private func gameOver() {
         
-        if shouldStartEndingGame {
+        if self.shoudGameOver {
             let host = self.gameObjects.filter { $0.owner == session?.host}.first!
             let nonHost = self.gameObjects.filter { $0.owner != session?.host}.first!
             
             let distance = host.objectRootNode.simdPosition - nonHost.objectRootNode.simdPosition
             let length = sqrtf(distance.x * distance.x + distance.y * distance.y + distance.z * distance.z)
             
+            if length < 0.5 {
+                if self.jerryShouldLookBehind {
+                    host.jerryLookBehind(isInRange: true, shouldPerform: self.jerryShouldLookBehind)
+                    self.jerryShouldLookBehind = false
+                }
+            } else if !self.jerryShouldLookBehind {
+                self.jerryShouldLookBehind = true
+                host.jerryLookBehind(isInRange: false, shouldPerform: self.jerryShouldLookBehind)
+            }
+            
             if length < 0.2 {
                 gameIsOverDelegate?.gameIsOver()
+                self.shoudGameOver = false
             }
+            
         }
     }
     

@@ -23,6 +23,9 @@ struct ObjectAnimations {
         var idleIdentifier = isHost ? "Jerry-Idle-1" : "Cheese_Idle-1"
         var runningIdentifier = isHost ? "Jerry-Running-1" : "Cheese_Running-1"
         
+        let lookBehindSceneName = "art.scnassets/Jerry-Look-Behind"
+        let lookBehindIdentifier = "Jerry-Look-Behind-1"
+        
         if !isAlive {
             idleSceneName = "art.scnassets/Tom-Idle"
             runningSceneName = "art.scnassets/Tom-Running"
@@ -33,15 +36,24 @@ struct ObjectAnimations {
         let idleURL = Bundle.main.url(forResource: idleSceneName, withExtension: "dae")!
         let runningURL = Bundle.main.url(forResource: runningSceneName, withExtension: "dae")!
         
+        let lookBehindURL = Bundle.main.url(forResource: lookBehindSceneName, withExtension: "dae")!
+        
         idleSceneSrouce = SCNSceneSource(url: idleURL, options: [
             SCNSceneSource.LoadingOption.animationImportPolicy : SCNSceneSource.AnimationImportPolicy.doNotPlay])!
         
         runningSceneSource = SCNSceneSource(url: runningURL, options: [
             SCNSceneSource.LoadingOption.animationImportPolicy : SCNSceneSource.AnimationImportPolicy.doNotPlay])!
         
+        let lookBehindSceneSource = SCNSceneSource(url: lookBehindURL, options: [
+            SCNSceneSource.LoadingOption.animationImportPolicy : SCNSceneSource.AnimationImportPolicy.doNotPlay])!
+        
         
         loadAnimations(sceneSource: idleSceneSrouce, withKey: "idle", animationIdentifier: idleIdentifier)
         loadAnimations(sceneSource: runningSceneSource, withKey: "running", animationIdentifier: runningIdentifier)
+        
+        if isHost {
+            loadAnimations(sceneSource: lookBehindSceneSource, withKey: "lookBehind", animationIdentifier: lookBehindIdentifier)
+        }
     }
     
     private mutating func loadAnimations(sceneSource: SCNSceneSource?, withKey: String, animationIdentifier: String) {
@@ -71,6 +83,8 @@ class GameObject: NSObject {
     var animations: ObjectAnimations
     
     var isAlive: Bool
+    
+    var isMoving: Bool = false
     
     static var indexCounter = 0
     var index = 0
@@ -149,7 +163,9 @@ class GameObject: NSObject {
         self.objectRootNode.addChildNode(self.shadowPlanNode!)
     }
     
-    func swichAnimation(isMoving: Bool) {
+    func switchBetweenIdleAndRunning(isMoving: Bool) {
+        self.isMoving = isMoving
+        
         let beginKey = isMoving ? "running" : "idle"
         let stopKey = isMoving ? "idle" : "running"
         self.geometryNode.addAnimation(self.animations.animations[beginKey]!, forKey: beginKey)
@@ -167,6 +183,20 @@ class GameObject: NSObject {
         self.objectRootNode.addChildNode(self.geometryNode)
         
         self.animations = ObjectAnimations(isHost: false, isAlive: false)
+    }
+    
+    func jerryLookBehind(isInRange: Bool, shouldPerform: Bool) {
+        let lookBehind = "lookBehind"
+        
+        if self.isMoving, shouldPerform {
+            if isInRange {
+                self.geometryNode.addAnimation(self.animations.animations[lookBehind]!, forKey: lookBehind)
+                self.geometryNode.removeAnimation(forKey: "running", blendOutDuration: CGFloat(0.5))
+            } else {
+                self.geometryNode.addAnimation(self.animations.animations["running"]!, forKey: "running")
+                self.geometryNode.removeAnimation(forKey: lookBehind, blendOutDuration: CGFloat(0.5))
+            }
+        }
     }
     
 }
