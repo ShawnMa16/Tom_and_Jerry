@@ -26,6 +26,9 @@ struct ObjectAnimations {
         let lookBehindSceneName = "art.scnassets/Jerry-Look-Behind"
         let lookBehindIdentifier = "Jerry-Look-Behind-1"
         
+        let tomCatchSceneName = "art.scnassets/Tom-Catching"
+        let tomCatchIdentifier = "Tom-Catching-1"
+        
         if !isAlive {
             idleSceneName = "art.scnassets/Tom-Idle"
             runningSceneName = "art.scnassets/Tom-Running"
@@ -37,6 +40,7 @@ struct ObjectAnimations {
         let runningURL = Bundle.main.url(forResource: runningSceneName, withExtension: "dae")!
         
         let lookBehindURL = Bundle.main.url(forResource: lookBehindSceneName, withExtension: "dae")!
+        let tomCatchURL = Bundle.main.url(forResource: tomCatchSceneName, withExtension: "dae")!
         
         idleSceneSrouce = SCNSceneSource(url: idleURL, options: [
             SCNSceneSource.LoadingOption.animationImportPolicy : SCNSceneSource.AnimationImportPolicy.doNotPlay])!
@@ -46,13 +50,16 @@ struct ObjectAnimations {
         
         let lookBehindSceneSource = SCNSceneSource(url: lookBehindURL, options: [
             SCNSceneSource.LoadingOption.animationImportPolicy : SCNSceneSource.AnimationImportPolicy.doNotPlay])!
-        
+        let tomCatchSceneSrouce = SCNSceneSource(url: tomCatchURL, options: [
+            SCNSceneSource.LoadingOption.animationImportPolicy : SCNSceneSource.AnimationImportPolicy.doNotPlay])!
         
         loadAnimations(sceneSource: idleSceneSrouce, withKey: "idle", animationIdentifier: idleIdentifier)
         loadAnimations(sceneSource: runningSceneSource, withKey: "running", animationIdentifier: runningIdentifier)
         
         if isHost {
             loadAnimations(sceneSource: lookBehindSceneSource, withKey: "lookBehind", animationIdentifier: lookBehindIdentifier)
+        } else {
+            loadAnimations(sceneSource: tomCatchSceneSrouce, withKey: "tomCatch", animationIdentifier: tomCatchIdentifier)
         }
     }
     
@@ -195,6 +202,34 @@ class GameObject: NSObject {
             } else {
                 self.geometryNode.addAnimation(self.animations.animations["running"]!, forKey: "running")
                 self.geometryNode.removeAnimation(forKey: lookBehind, blendOutDuration: CGFloat(0.5))
+            }
+        }
+    }
+    
+    func tomCatch(isInRange: Bool, shouldPerform: Bool) {
+        let tomCatch = "tomCatch"
+        
+        if self.isMoving, shouldPerform {
+            if isInRange {
+                self.geometryNode.addAnimation(self.animations.animations[tomCatch]!, forKey: tomCatch)
+                self.geometryNode.removeAnimation(forKey: "running", blendOutDuration: CGFloat(0.5))
+            } else {
+                self.geometryNode.addAnimation(self.animations.animations["running"]!, forKey: "running")
+                self.geometryNode.removeAnimation(forKey: tomCatch, blendOutDuration: CGFloat(0.5))
+            }
+        }
+    }
+    
+    func perfromAction(isHost: Bool, isInRange: Bool) {
+        let action = isHost ? "lookBehind" : "tomCatch"
+        
+        if self.isMoving{
+            if isInRange {
+                self.geometryNode.addAnimation(self.animations.animations[action]!, forKey: action)
+                self.geometryNode.removeAnimation(forKey: "running", blendOutDuration: CGFloat(0.5))
+            } else {
+                self.geometryNode.addAnimation(self.animations.animations["running"]!, forKey: "running")
+                self.geometryNode.removeAnimation(forKey: action, blendOutDuration: CGFloat(0.5))
             }
         }
     }

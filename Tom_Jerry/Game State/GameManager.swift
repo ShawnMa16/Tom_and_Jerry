@@ -46,7 +46,7 @@ class GameManager: NSObject {
     private let commandsLock = NSLock()
     
     private var shoudGameOver = false
-    private var jerryShouldLookBehind = true
+    private var shouldPerformInteraction = true
     
     let currentPlayer = UserDefaults.standard.myself
     
@@ -312,16 +312,21 @@ class GameManager: NSObject {
             let length = sqrtf(distance.x * distance.x + distance.y * distance.y + distance.z * distance.z)
             
             if length < 0.5 {
-                if self.jerryShouldLookBehind {
-                    host.jerryLookBehind(isInRange: true, shouldPerform: self.jerryShouldLookBehind)
-                    self.jerryShouldLookBehind = false
+                if self.shouldPerformInteraction {
+                    host.perfromAction(isHost: true, isInRange: true)
+                    nonHost.perfromAction(isHost: false, isInRange: true)
+                    self.shouldPerformInteraction = false
                 }
-            } else if !self.jerryShouldLookBehind {
-                self.jerryShouldLookBehind = true
-                host.jerryLookBehind(isInRange: false, shouldPerform: self.jerryShouldLookBehind)
+            } else if !self.shouldPerformInteraction {
+                self.shouldPerformInteraction = true
+                host.perfromAction(isHost: true, isInRange: false)
+                nonHost.perfromAction(isHost: false, isInRange: false)
             }
             
             if length < 0.2 {
+                host.perfromAction(isHost: true, isInRange: false)
+                nonHost.perfromAction(isHost: false, isInRange: false)
+                
                 gameIsOverDelegate?.gameIsOver()
                 self.shoudGameOver = false
             }
