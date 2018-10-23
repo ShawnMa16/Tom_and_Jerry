@@ -60,11 +60,29 @@ class GameViewController: UIViewController,  GameViewControllerDelegate{
         return view
     }()
     
-    let gameOverView: UIImageView = {
-        let view = UIImageView()
-        view.image = UIImage(named: "gameOver.png")
+    let blackView: UIView = {
+        let view = UIView()
+        view.backgroundColor = UIColor(displayP3Red: 0, green: 0, blue: 0, alpha: 0.5)
+        view.isUserInteractionEnabled = false
         return view
     }()
+    
+    let wantMoreView: UITextView = {
+        let view = UITextView()
+        view.text = "Wanna know more?"
+        view.textColor = .white
+        view.font = .systemFont(ofSize: 100.0)
+        view.backgroundColor = .clear
+        view.textAlignment = .center
+        view.isUserInteractionEnabled = false
+        return view
+    }()
+    
+//    let gameOverView: UIImageView = {
+//        let view = UIImageView()
+//        view.image = UIImage(named: "gameOver.png")
+//        return view
+//    }()
     
     let contactInfoView: UITextView = {
         let view = UITextView()
@@ -74,7 +92,6 @@ class GameViewController: UIViewController,  GameViewControllerDelegate{
         view.backgroundColor = .clear
         view.textAlignment = .center
         view.isUserInteractionEnabled = false
-        view.isHidden = true
         return view
     }()
     
@@ -143,8 +160,10 @@ class GameViewController: UIViewController,  GameViewControllerDelegate{
         view.addSubview(arscnView)
         view.addSubview(padView)
         view.addSubview(addButton)
-        view.addSubview(gameOverView)
-        view.addSubview(contactInfoView)
+
+        view.addSubview(blackView)
+        blackView.addSubview(wantMoreView)
+        blackView.addSubview(contactInfoView)
         
         view.addSubview(sessionInfoView)
         sessionInfoView.addSubview(sessionInfoLabel)
@@ -342,20 +361,30 @@ class GameViewController: UIViewController,  GameViewControllerDelegate{
             make.height.equalTo(44)
         }
         
-        gameOverView.snp.makeConstraints { (make) in
-            make.width.height.equalTo(300)
-            make.center.equalToSuperview()
+//        gameOverView.snp.makeConstraints { (make) in
+//            make.width.height.equalTo(300)
+//            make.center.equalToSuperview()
+//        }
+        
+        blackView.snp.makeConstraints { (make) in
+            make.edges.equalToSuperview().offset(0)
+        }
+        
+        wantMoreView.snp.makeConstraints { (make) in
+            make.width.equalTo(800)
+            make.height.equalTo(220)
+            make.top.equalToSuperview().offset(300)
+            make.centerX.equalToSuperview()
         }
         
         contactInfoView.snp.makeConstraints { (make) in
             make.width.equalTo(500)
             make.height.equalTo(200)
             make.centerX.equalToSuperview()
-            make.top.equalTo(self.gameOverView.snp.bottom).offset(50)
+            make.top.equalTo(self.wantMoreView.snp.bottom).offset(30)
         }
         
         
-        gameOverView.isHidden = true
         addButton.isHidden = false
         addButton.addTarget(self, action: #selector(addObject), for: .touchUpInside)
         
@@ -517,12 +546,9 @@ class GameViewController: UIViewController,  GameViewControllerDelegate{
     }
     
     func gameIsOver() {
-        DispatchQueue.main.async {
-            self.gameOverView.isHidden = false
-            self.contactInfoView.isHidden = false
-            
+        DispatchQueue.main.async {            
             UIView.animate(withDuration: 0.3, delay: 0, options: .transitionCrossDissolve, animations: {
-                self.gameOverView.isHidden = false
+                self.blackView.isHidden = false
             }, completion: nil)
         }
     }
