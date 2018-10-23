@@ -66,6 +66,18 @@ class GameViewController: UIViewController,  GameViewControllerDelegate{
         return view
     }()
     
+    let contactInfoView: UITextView = {
+        let view = UITextView()
+        view.text = "xm596@nyu.edu \n nieyiyao@gmail.com"
+        view.textColor = .white
+        view.font = .systemFont(ofSize: 50.0)
+        view.backgroundColor = .clear
+        view.textAlignment = .center
+        view.isUserInteractionEnabled = false
+        view.isHidden = true
+        return view
+    }()
+    
     let sessionInfoView: UIView = {
         let view = UIView()
         view.backgroundColor = .clear
@@ -132,6 +144,7 @@ class GameViewController: UIViewController,  GameViewControllerDelegate{
         view.addSubview(padView)
         view.addSubview(addButton)
         view.addSubview(gameOverView)
+        view.addSubview(contactInfoView)
         
         view.addSubview(sessionInfoView)
         sessionInfoView.addSubview(sessionInfoLabel)
@@ -334,6 +347,14 @@ class GameViewController: UIViewController,  GameViewControllerDelegate{
             make.center.equalToSuperview()
         }
         
+        contactInfoView.snp.makeConstraints { (make) in
+            make.width.equalTo(500)
+            make.height.equalTo(200)
+            make.centerX.equalToSuperview()
+            make.top.equalTo(self.gameOverView.snp.bottom).offset(50)
+        }
+        
+        
         gameOverView.isHidden = true
         addButton.isHidden = false
         addButton.addTarget(self, action: #selector(addObject), for: .touchUpInside)
@@ -496,10 +517,10 @@ class GameViewController: UIViewController,  GameViewControllerDelegate{
     }
     
     func gameIsOver() {
-        print("game over 2")
         DispatchQueue.main.async {
             self.gameOverView.isHidden = false
-            print("game over 3")
+            self.contactInfoView.isHidden = false
+            
             UIView.animate(withDuration: 0.3, delay: 0, options: .transitionCrossDissolve, animations: {
                 self.gameOverView.isHidden = false
             }, completion: nil)

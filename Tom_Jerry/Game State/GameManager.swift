@@ -213,13 +213,12 @@ class GameManager: NSObject {
     // load music from source
     
     private func loadMusic() {
-        
         for name in self.musicNames {
+            guard let url = Bundle.main.url(forResource: name, withExtension: "mp3") else { return }
             do {
-                guard let url = Bundle.main.url(forResource: name, withExtension: "mp3") else { return }
                 
                 let audioPlayer = try AVAudioPlayer(contentsOf: url, fileTypeHint: AVFileType.mp3.rawValue)
-                
+                audioPlayer.numberOfLoops = -1
                 self.audioPlayers.append(audioPlayer)
                 
             } catch {
@@ -286,6 +285,9 @@ class GameManager: NSObject {
                     let geometryNode = nonHost.objectRootNode!
                     self.createExplosion(position: geometryNode.presentation.position,
                                          rotation: geometryNode.presentation.rotation)
+                    
+                    // play the first music
+                    self.audioPlayers[0].play()
                 }
                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.5)  {
                     nonHost.shouldSwitchToTom()
