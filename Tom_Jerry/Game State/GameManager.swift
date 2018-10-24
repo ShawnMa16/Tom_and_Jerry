@@ -311,7 +311,7 @@ class GameManager: NSObject {
             let distance = host.objectRootNode.simdPosition - nonHost.objectRootNode.simdPosition
             let length = sqrtf(distance.x * distance.x + distance.y * distance.y + distance.z * distance.z)
             
-            if length < 0.5 {
+            if length < 0.8 {
                 if self.shouldPerformInteraction {
                     host.perfromAction(isHost: true, isInRange: true)
                     nonHost.perfromAction(isHost: false, isInRange: true)
