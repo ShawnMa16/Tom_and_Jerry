@@ -62,8 +62,9 @@ class GameViewController: UIViewController,  GameViewControllerDelegate{
     
     let blackView: UIView = {
         let view = UIView()
-        view.backgroundColor = UIColor(displayP3Red: 0, green: 0, blue: 0, alpha: 0.5)
+        view.backgroundColor = UIColor(displayP3Red: 0, green: 0, blue: 0, alpha: 0.6)
         view.isUserInteractionEnabled = false
+        view.isHidden = true
         return view
     }()
     
@@ -77,12 +78,6 @@ class GameViewController: UIViewController,  GameViewControllerDelegate{
         view.isUserInteractionEnabled = false
         return view
     }()
-    
-//    let gameOverView: UIImageView = {
-//        let view = UIImageView()
-//        view.image = UIImage(named: "gameOver.png")
-//        return view
-//    }()
     
     let contactInfoView: UITextView = {
         let view = UITextView()
@@ -360,11 +355,7 @@ class GameViewController: UIViewController,  GameViewControllerDelegate{
             make.bottom.equalTo(arscnView.snp.bottom).offset(-50)
             make.height.equalTo(44)
         }
-        
-//        gameOverView.snp.makeConstraints { (make) in
-//            make.width.height.equalTo(300)
-//            make.center.equalToSuperview()
-//        }
+
         
         blackView.snp.makeConstraints { (make) in
             make.edges.equalToSuperview().offset(0)
