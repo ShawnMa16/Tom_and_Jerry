@@ -20,7 +20,7 @@ struct ObjectAnimations {
     init(isHost: Bool, isAlive: Bool) {
         var idleSceneName = isHost ? "art.scnassets/Jerry-Idle" : "art.scnassets/Cheese_Idle"
         var runningSceneName = isHost ? "art.scnassets/Jerry-Running" : "art.scnassets/Cheese_Running"
-        var idleIdentifier = isHost ? "Jerry-Idle-1" : "Cheese_Idle-1"
+        var idleIdentifier = isHost ? "Jerry-Idle-1" : "keyframedAnimations1"
         var runningIdentifier = isHost ? "Jerry-Running-1" : "Cheese_Running-1"
         
         let lookBehindSceneName = "art.scnassets/Jerry-Look-Behind"
