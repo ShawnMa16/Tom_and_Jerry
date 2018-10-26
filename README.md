@@ -1,11 +1,11 @@
 # Tom_and_Jerry
+![](Tom_and_Jerry.gif)
+
 This is an AR multiuser game based on ARKit 2 and Multipeerconnectivity.
 
 It allow users to controll the characters to interact with.
 
 Also see a simplified version [here](https://github.com/ShawnMa16/iOS_ARkit2_Multiusers)
-![](Tom_and_Jerry.gif)
-
 
 ## Prerequisites
 * Two iOS 12 devices in the same Wi-Fi
