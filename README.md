@@ -23,6 +23,9 @@ $ pod install
 ```
 ## Running
 The better you match the AR worldmap, the better lighting shadow you will get
+```
+open "Tom_Jerry.xcworkspace"
+```
 
 ### Host the game with one device
 
