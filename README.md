@@ -1,4 +1,3 @@
-# COOL( Tom_and_Jerry) SHOW
 ![](Tom_and_Jerry.gif)
 
 This is an AR multiuser game based on ARKit 2 and Multipeerconnectivity.
